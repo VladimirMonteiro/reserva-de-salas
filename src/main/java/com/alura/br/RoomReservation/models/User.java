@@ -34,5 +34,6 @@ public class User {
     private String email;
 
     @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "user")
     private List<Reservation> reservations = new ArrayList<>();
 }

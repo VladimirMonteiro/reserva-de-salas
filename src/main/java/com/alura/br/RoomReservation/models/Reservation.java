@@ -29,7 +29,9 @@ public class Reservation {
     private ReservationStatus reservationStatus;
 
     @Setter(AccessLevel.NONE)
+    @ManyToMany(mappedBy = "reservations")
     private List<Room> rooms = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 }
