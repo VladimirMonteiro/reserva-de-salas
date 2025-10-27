@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  app:
+    image: maven:3.9.6-eclipse-temurin-21
+    container_name: room_reservation_dev
+    working_dir: /app
+    volumes:
+      - ./:/app                # monta o código local no container
+      - ~/.m2:/root/.m2        # cache de dependências do Maven
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_URL: jdbc:postgresql://db:5432/room-reservation
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    command: mvn spring-boot:run
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: postgres:15
+    container_name: postgres_dev
+    restart: always
+    environment:
+      POSTGRES_DB: room-reservation
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
