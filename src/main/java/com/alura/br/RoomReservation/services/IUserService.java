@@ -6,4 +6,5 @@ import com.alura.br.RoomReservation.dto.user.UserDto;
 public interface IUserService {
 
     UserDto createUser(CreateUserRequestDto dto);
+    UserDto findById(Long id);
 }

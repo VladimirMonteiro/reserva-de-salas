@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.alura.br.RoomReservation.services.exceptions.UserAlreadyExistsException;
+import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,5 +46,14 @@ public class ControllerExceptionHandler {
                 Map.of("user", e.getMessage()), request.getServletPath());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<StandardError> ObjectNotFoundException(ObjectNotFoundException e, HttpServletRequest request) {
+        var status = HttpStatus.NOT_FOUND.value();
+        
+        var error = new StandardError(Instant.now(), status, "Recurso não encontrado", Map.of("notFound", e.getMessage()), request.getServletPath());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }

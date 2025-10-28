@@ -5,9 +5,11 @@ import com.alura.br.RoomReservation.dto.user.UserDto;
 import com.alura.br.RoomReservation.models.User;
 import com.alura.br.RoomReservation.repositories.UserRepository;
 import com.alura.br.RoomReservation.services.IUserService;
+import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 import com.alura.br.RoomReservation.strategy.userValidations.UserValidationsStategy;
 import com.alura.br.RoomReservation.utils.UserMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,5 +36,12 @@ public class UserService implements IUserService {
 
         var savedUser = userRepository.save(newUser);
         return UserMapper.toDto(savedUser);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDto findById(Long id) {
+        var user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado."));
+        return UserMapper.toDto(user);
     }
 }
