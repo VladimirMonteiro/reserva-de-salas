@@ -1,6 +1,7 @@
 package com.alura.br.RoomReservation.services.implementations;
 
 import com.alura.br.RoomReservation.dto.user.CreateUserRequestDto;
+import com.alura.br.RoomReservation.dto.user.UserDto;
 import com.alura.br.RoomReservation.models.User;
 import com.alura.br.RoomReservation.repositories.UserRepository;
 import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
@@ -8,11 +9,14 @@ import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +25,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -61,8 +68,27 @@ class UserServiceTest {
 
         var exception = assertThrows(ObjectNotFoundException.class,
                 () -> userService.findById(anyLong()));
-        
+
         assertEquals("Usuário não encontrado.", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnListOfUsersWhenUsersExist() {
+        List<User> users = List.of(user);
+        Page<User> usersPage = new PageImpl<>(users);
+
+        when(userRepository.findAll(any(Pageable.class))).thenReturn(usersPage);
+
+        List<UserDto> result = userService.findAll(0, 20);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(user.getName(), result.get(0).name());
+        assertEquals(user.getEmail(), result.get(0).email());
+        assertEquals(user.getCpf(), result.get(0).cpf());
+        assertEquals(user.getAge(), result.get(0).age());
+        assertEquals(user.getPhone(), result.get(0).phone());
+        verify(userRepository, times(1)).findAll(any(Pageable.class));
     }
 
     private User buildUser() {
