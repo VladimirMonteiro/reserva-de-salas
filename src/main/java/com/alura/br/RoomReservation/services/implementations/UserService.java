@@ -2,18 +2,21 @@ package com.alura.br.RoomReservation.services.implementations;
 
 import com.alura.br.RoomReservation.dto.user.CreateUserRequestDto;
 import com.alura.br.RoomReservation.dto.user.UserDto;
+import com.alura.br.RoomReservation.models.User;
 import com.alura.br.RoomReservation.repositories.UserRepository;
 import com.alura.br.RoomReservation.services.IUserService;
-import com.alura.br.RoomReservation.services.exceptions.UserAlreadyExistsException;
+import com.alura.br.RoomReservation.strategy.userValidations.UserValidationsStategy;
 import com.alura.br.RoomReservation.utils.UserMapper;
-
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
+    private final List<UserValidationsStategy> validations = new ArrayList<>();
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -21,23 +24,13 @@ public class UserService implements IUserService {
 
     @Override
     public UserDto createUser(CreateUserRequestDto dto) {
-        var newUser = UserMapper.toEntity(dto);
+        User newUser = UserMapper.toEntity(dto);
 
-        try {
-            var savedUser = userRepository.save(newUser);
-            return UserMapper.toDto(savedUser);
-        } catch (DataIntegrityViolationException e) {
-            String msg = e.getMostSpecificCause().getMessage();
+        userRepository.findByCpfOrPhoneOrEmail(dto.cpf(), dto.phone(), dto.email())
+                .ifPresent((u) -> validations.forEach(
+                        v -> v.validate(u, UserMapper.toDto(newUser))));
 
-            if (msg.contains("users_cpf_key")) {
-                throw new UserAlreadyExistsException("CPF já cadastrado.");
-            } else if (msg.contains("users_email_key")) {
-                throw new UserAlreadyExistsException("Email já cadastrado.");
-            } else if (msg.contains("users_phone_key")) {
-                throw new UserAlreadyExistsException("Telefone já cadastrado.");
-            } else {
-                throw e;
-            }
-        }
+        var savedUser = userRepository.save(newUser);
+        return UserMapper.toDto(savedUser);
     }
 }
