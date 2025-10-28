@@ -11,7 +11,7 @@ public class EmailAlreadyExistsValidation implements UserValidationsStategy {
     @Override
     public void validate (User user, UserDto userDto) {
         if (user.getEmail().equals(userDto.email())) {
-            throw new UserAlreadyExistsException("Telefone já cadastrado.");
+            throw new UserAlreadyExistsException("E-mail já cadastrado.");
         }
     }
 }
