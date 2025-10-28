@@ -1,6 +1,9 @@
 package com.alura.br.RoomReservation.repositories;
 
 import com.alura.br.RoomReservation.models.User;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -8,4 +11,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByCpfOrPhoneOrEmail(String cpf, String phone, String email);
+    Page<User> findAll(Pageable pageable);
 }

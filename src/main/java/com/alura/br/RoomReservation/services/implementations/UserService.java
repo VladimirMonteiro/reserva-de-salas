@@ -8,6 +8,10 @@ import com.alura.br.RoomReservation.services.IUserService;
 import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 import com.alura.br.RoomReservation.strategy.userValidations.UserValidationsStategy;
 import com.alura.br.RoomReservation.utils.UserMapper;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,5 +47,15 @@ public class UserService implements IUserService {
     public UserDto findById(Long id) {
         var user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado."));
         return UserMapper.toDto(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserDto> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<User> usersPage = userRepository.findAll(pageable);
+
+        return usersPage.getContent().stream().map(UserMapper::toDto).toList();
     }
 }
