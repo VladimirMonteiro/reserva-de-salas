@@ -9,26 +9,28 @@ import com.alura.br.RoomReservation.strategy.userValidations.UserValidationsStat
 import com.alura.br.RoomReservation.utils.UserMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
-    private final List<UserValidationsStategy> validations = new ArrayList<>();
+    private final List<UserValidationsStategy> validations;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, List<UserValidationsStategy> validations) {
         this.userRepository = userRepository;
+        this.validations = validations;
     }
 
     @Override
     public UserDto createUser(CreateUserRequestDto dto) {
         User newUser = UserMapper.toEntity(dto);
 
-        userRepository.findByCpfOrPhoneOrEmail(dto.cpf(), dto.phone(), dto.email())
-                .ifPresent((u) -> validations.forEach(
-                        v -> v.validate(u, UserMapper.toDto(newUser))));
+        var userIfExists = userRepository.findByCpfOrPhoneOrEmail(dto.cpf(), dto.phone(), dto.email());
+
+        if (userIfExists.isPresent()) {
+            validations.forEach(v -> v.validate(newUser, UserMapper.toDto(userIfExists.get())));
+        }
 
         var savedUser = userRepository.save(newUser);
         return UserMapper.toDto(savedUser);
