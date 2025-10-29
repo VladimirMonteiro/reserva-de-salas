@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -72,6 +73,25 @@ class UserServiceTest {
         user = buildUser();
         createUserRequestDto = buildCreateUserRequestDto();
         updateUserDto = buildUpdateUserRequestDto();
+    }
+
+    @Test
+    void shouldCreateUserWhenInputsAreValids() {
+        when(userRepository.findByCpfOrPhoneOrEmail(anyString(), anyString(), anyString()))
+                .thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        var result = userService.createUser(createUserRequestDto);
+
+        assertNotNull(result);
+        assertEquals(createUserRequestDto.name(), user.getName());
+        assertEquals(createUserRequestDto.cpf(), user.getCpf());
+        assertEquals(createUserRequestDto.age(), user.getAge());
+        assertEquals(createUserRequestDto.phone(), user.getPhone());
+        assertEquals(createUserRequestDto.email(), user.getEmail());
+
+        verify(userRepository, times(1)).findByCpfOrPhoneOrEmail(anyString(), anyString(), anyString());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
