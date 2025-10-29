@@ -3,6 +3,7 @@ package com.alura.br.RoomReservation.services;
 import java.util.List;
 
 import com.alura.br.RoomReservation.dto.user.CreateUserRequestDto;
+import com.alura.br.RoomReservation.dto.user.UpdateUserDto;
 import com.alura.br.RoomReservation.dto.user.UserDto;
 
 public interface IUserService {
@@ -11,4 +12,5 @@ public interface IUserService {
     UserDto findById(Long id);
     List<UserDto> findAll(int page, int size);
     void deleteUser(Long id);
+    UserDto updateUser(UpdateUserDto dto, Long id);
 }

@@ -1,6 +1,7 @@
 package com.alura.br.RoomReservation.services.implementations;
 
 import com.alura.br.RoomReservation.dto.user.CreateUserRequestDto;
+import com.alura.br.RoomReservation.dto.user.UpdateUserDto;
 import com.alura.br.RoomReservation.dto.user.UserDto;
 import com.alura.br.RoomReservation.models.User;
 import com.alura.br.RoomReservation.repositories.UserRepository;
@@ -8,7 +9,6 @@ import com.alura.br.RoomReservation.services.IUserService;
 import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 import com.alura.br.RoomReservation.strategy.userValidations.UserValidationsStategy;
 import com.alura.br.RoomReservation.utils.UserMapper;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -68,4 +68,23 @@ public class UserService implements IUserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional
+    public UserDto updateUser(UpdateUserDto dto, Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+
+        // Verifica se existe outro usuário com o mesmo CPF, telefone ou e-mail
+        var other = userRepository.findByCpfOrPhoneOrEmail(dto.cpf(), dto.phone(), dto.email());
+        if (other.isPresent() && !other.get().getId().equals(id)) {
+            validations.forEach(v -> v.validate(user, UserMapper.toDto(other.get())));
+        }
+
+        // Atualiza apenas os campos que vieram no DTO
+        UserMapper.updateEntityFromDto(dto, user);
+
+        var saved = userRepository.save(user);
+        System.out.println(user);
+        return UserMapper.toDto(saved);
+    }
 }

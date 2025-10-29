@@ -3,6 +3,7 @@ package com.alura.br.RoomReservation.controllers;
 import org.springframework.web.bind.annotation.*;
 
 import com.alura.br.RoomReservation.dto.user.CreateUserRequestDto;
+import com.alura.br.RoomReservation.dto.user.UpdateUserDto;
 import com.alura.br.RoomReservation.dto.user.UserDto;
 import com.alura.br.RoomReservation.services.implementations.UserService;
 
@@ -12,6 +13,10 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -43,6 +48,11 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> updateUser(@RequestBody @Valid UpdateUserDto dto, @PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(dto, id));
     }
 
 }
