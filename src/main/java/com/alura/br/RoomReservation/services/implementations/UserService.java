@@ -8,7 +8,7 @@ import com.alura.br.RoomReservation.services.IUserService;
 import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 import com.alura.br.RoomReservation.strategy.userValidations.UserValidationsStategy;
 import com.alura.br.RoomReservation.utils.UserMapper;
-
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,4 +58,14 @@ public class UserService implements IUserService {
 
         return usersPage.getContent().stream().map(UserMapper::toDto).toList();
     }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new ObjectNotFoundException("Usuário não encontrado.");
+        }
+        userRepository.deleteById(id);
+    }
+
 }

@@ -10,4 +10,5 @@ public interface IUserService {
     UserDto createUser(CreateUserRequestDto dto);
     UserDto findById(Long id);
     List<UserDto> findAll(int page, int size);
+    void deleteUser(Long id);
 }
