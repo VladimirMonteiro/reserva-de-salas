@@ -6,12 +6,13 @@ import com.alura.br.RoomReservation.models.User;
 import com.alura.br.RoomReservation.repositories.UserRepository;
 import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -89,6 +90,29 @@ class UserServiceTest {
         assertEquals(user.getAge(), result.get(0).age());
         assertEquals(user.getPhone(), result.get(0).phone());
         verify(userRepository, times(1)).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void shouldDeleteUserByIdWhenUserExists() {
+        Long id = 1L;
+        when(userRepository.existsById(id)).thenReturn(true);
+        doNothing().when(userRepository).deleteById(id);
+
+        assertDoesNotThrow(() -> userService.deleteUser(id));
+
+        verify(userRepository, times(1)).existsById(id);
+        verify(userRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    void shouldThrowsObjectNotFoundExceptionWhenDeleteUserNotExists() {
+        Long id = 1L;
+        when(userRepository.existsById(id)).thenReturn(false);
+
+        var exception = assertThrows(ObjectNotFoundException.class, () -> userService.deleteUser(id));
+
+        assertEquals("Usuário não encontrado.", exception.getMessage());
+        verify(userRepository, times(1)).existsById(id);
     }
 
     private User buildUser() {
