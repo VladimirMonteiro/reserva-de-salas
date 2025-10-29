@@ -35,7 +35,8 @@ public class UserMapper {
                 dto.email());
     }
 
-    public static void updateEntityFromDto(UpdateUserDto dto, User user) {
+    public static User updateEntityFromDto(UpdateUserDto dto, User user) {
+
         if (dto.name() != null)
             user.setName(dto.name());
         if (dto.cpf() != null)
@@ -46,6 +47,7 @@ public class UserMapper {
             user.setPhone(dto.phone());
         if (dto.email() != null)
             user.setEmail(dto.email());
+        return user;
     }
 
 }
