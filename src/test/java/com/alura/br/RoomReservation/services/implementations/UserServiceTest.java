@@ -12,8 +12,6 @@ import com.alura.br.RoomReservation.strategy.userValidations.PhoneAlreadyExistsV
 import com.alura.br.RoomReservation.strategy.userValidations.UserValidationsStategy;
 import com.alura.br.RoomReservation.utils.UserMapper;
 
-import lombok.var;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -92,6 +90,24 @@ class UserServiceTest {
 
         verify(userRepository, times(1)).findByCpfOrPhoneOrEmail(anyString(), anyString(), anyString());
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void shouldCallsValidationsWithUserAlreadyExists() {
+
+        when(userRepository.findByCpfOrPhoneOrEmail(anyString(), anyString(), anyString()))
+                .thenReturn(Optional.of(user));
+
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        validations = new ArrayList<>(List.of(cpfValidation, phoneValidation, emailValidation));
+        ReflectionTestUtils.setField(userService, "validations", validations);
+
+        userService.createUser(createUserRequestDto);
+
+        verify(cpfValidation).validate(any(), any());
+        verify(phoneValidation).validate(any(), any());
+        verify(emailValidation).validate(any(), any());
     }
 
     @Test
