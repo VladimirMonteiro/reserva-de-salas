@@ -2,12 +2,15 @@ package com.alura.br.RoomReservation.services.implementations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,7 @@ import com.alura.br.RoomReservation.dto.room.RoomDto;
 import com.alura.br.RoomReservation.models.Room;
 import com.alura.br.RoomReservation.models.enums.RoomStatus;
 import com.alura.br.RoomReservation.repositories.RoomRepository;
+import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class RoomServiceTest {
@@ -57,6 +61,31 @@ class RoomServiceTest {
         assertEquals(room.getReservations().size(), result.reservations().size());
 
         verify(roomRepository, times(1)).save(any(Room.class));
+    }
+
+    @Test
+    void shouldReturnRoomByIdWhenRoomExists() {
+        when(roomRepository.findById(anyLong())).thenReturn(Optional.of(room));
+
+        var result = roomService.findById(room.getId());
+
+        assertNotNull(result);
+        assertEquals(room.getId(), result.id());
+        assertEquals(room.getName(), result.name());
+        assertEquals(room.getCapacity(), result.capacity());
+        assertEquals(room.getRoomStatus(), result.roomStatus());
+        assertEquals(room.getReservations().size(), result.reservations().size());
+
+        verify(roomRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void shouldThrowsObjectNotFoundExceptionWhenRoomNotFound() {
+        when(roomRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        var exception = assertThrows(ObjectNotFoundException.class, () -> roomService.findById(anyLong()));
+
+        assertEquals("Sala não encontrada.", exception.getMessage());
     }
 
 
