@@ -7,6 +7,8 @@ import com.alura.br.RoomReservation.dto.room.CreateRoomRequestDto;
 import com.alura.br.RoomReservation.dto.room.RoomDto;
 import com.alura.br.RoomReservation.services.implementations.RoomService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -28,7 +30,7 @@ public class RoomController {
     }
 
     @PostMapping
-    public ResponseEntity<RoomDto> createRoom(@RequestBody CreateRoomRequestDto dto) {
+    public ResponseEntity<RoomDto> createRoom(@RequestBody @Valid CreateRoomRequestDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomService.createRoom(dto));
     }
 
