@@ -6,6 +6,7 @@ import com.alura.br.RoomReservation.dto.room.CreateRoomRequestDto;
 import com.alura.br.RoomReservation.dto.room.RoomDto;
 import com.alura.br.RoomReservation.repositories.RoomRepository;
 import com.alura.br.RoomReservation.services.IRoomService;
+import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 import com.alura.br.RoomReservation.utils.RoomMapper;
 
 @Service
@@ -22,6 +23,14 @@ public class RoomService implements IRoomService {
         var roomSave = RoomMapper.toEntity(dto);
         var savedRoom = roomRepository.save(roomSave);
         return RoomMapper.toDto(savedRoom);
+    }
+
+    @Override
+    public RoomDto findById(Long id) {
+        var roomIfExists = roomRepository.findById(id).
+        orElseThrow(() -> new ObjectNotFoundException("Sala não encontrada."));
+
+        return RoomMapper.toDto(roomIfExists);
     }
 
 }
