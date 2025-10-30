@@ -45,7 +45,7 @@ public class ControllerExceptionHandler {
         var error = new StandardError(Instant.now(), HttpStatus.CONFLICT.value(), "Usuário inválido",
                 Map.of("user", e.getMessage()), request.getServletPath());
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(ObjectNotFoundException.class)
