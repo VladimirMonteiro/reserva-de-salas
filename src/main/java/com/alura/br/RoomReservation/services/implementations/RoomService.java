@@ -33,6 +33,7 @@ public class RoomService implements IRoomService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RoomDto findById(Long id) {
         var roomIfExists = roomRepository.findById(id).
         orElseThrow(() -> new ObjectNotFoundException("Sala não encontrada."));
