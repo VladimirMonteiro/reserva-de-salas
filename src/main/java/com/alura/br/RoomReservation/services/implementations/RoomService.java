@@ -49,4 +49,12 @@ public class RoomService implements IRoomService {
        return roomsPage.getContent().stream().map(RoomMapper::toDto).toList();
     }
 
+    @Override
+    @Transactional
+    public void deleteRoom (Long id) {
+        if (!roomRepository.existsById(id)) {
+            throw new ObjectNotFoundException("Sala não encontrada.");
+        }
+        roomRepository.deleteById(id);
+    }
 }
