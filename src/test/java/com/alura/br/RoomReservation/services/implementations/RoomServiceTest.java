@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.alura.br.RoomReservation.dto.room.CreateRoomRequestDto;
 import com.alura.br.RoomReservation.dto.room.RoomDto;
+import com.alura.br.RoomReservation.dto.room.UpdateRoomRequestDto;
 import com.alura.br.RoomReservation.models.Room;
 import com.alura.br.RoomReservation.models.enums.RoomStatus;
 import com.alura.br.RoomReservation.repositories.RoomRepository;
@@ -40,12 +41,14 @@ class RoomServiceTest {
     private Room room;
     private RoomDto roomDto;
     private CreateRoomRequestDto createRoomRequestDto;
+    private UpdateRoomRequestDto updateRoomRequestDto;
 
     @BeforeEach
     void setUp() {
         room = buildRoom();
         roomDto = buildRoomDto();
         createRoomRequestDto = buildCreateRoomRequestDto();
+        updateRoomRequestDto = buildUpdateRoomRequestDto();
     }
 
     @Test
@@ -117,6 +120,32 @@ class RoomServiceTest {
     }
 
     @Test
+    void shouldUpdateRoomWhenRoomExist() {
+        Long id = 1L;
+        when(roomRepository.findById(anyLong())).thenReturn(Optional.of(room));
+
+        room.setName(updateRoomRequestDto.name());
+        room.setCapacity(updateRoomRequestDto.capacity());
+        room.setRoomStatus(updateRoomRequestDto.roomStatus());
+
+        var result = roomService.updateRoom(updateRoomRequestDto, id);
+
+        assertNotNull(result);
+        assertEquals(id, result.id());
+        assertEquals(room.getName(), result.name());
+        assertEquals(room.getCapacity(), result.capacity());
+        assertEquals(room.getRoomStatus(), result.roomStatus());
+
+        verify(roomRepository, times(1)).findById(id);
+        verify(roomRepository, times(1)).save(any(Room.class));
+    }
+
+    @Test
+    void shouldThrowsObjectNotFoundExceptionWhenUpdateRoomNotFound() {
+        
+    }
+
+    @Test
     void shouldThrowsObjectNotFoundExceptionWhenRoomNotExists() {
         when(roomRepository.existsById(anyLong())).thenReturn(false);
 
@@ -137,5 +166,8 @@ class RoomServiceTest {
 
     private CreateRoomRequestDto buildCreateRoomRequestDto() {
         return new CreateRoomRequestDto("Sala Reunião 01", 30, RoomStatus.ACTIVE);
+    }
+     private UpdateRoomRequestDto buildUpdateRoomRequestDto() {
+        return new UpdateRoomRequestDto("Sala Reunião 02", 32, RoomStatus.INACTIVE);
     }
 }
