@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alura.br.RoomReservation.dto.room.CreateRoomRequestDto;
 import com.alura.br.RoomReservation.dto.room.RoomDto;
+import com.alura.br.RoomReservation.dto.room.UpdateRoomRequestDto;
 
 public interface IRoomService {
     
@@ -11,4 +12,5 @@ public interface IRoomService {
     RoomDto findById(Long id);
     List<RoomDto> findAll(int page, int size);
     void deleteRoom(Long id);
+    RoomDto updateRoom(UpdateRoomRequestDto dto, Long id);
 }

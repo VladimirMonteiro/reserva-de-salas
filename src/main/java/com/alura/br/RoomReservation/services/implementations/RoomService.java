@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alura.br.RoomReservation.dto.room.CreateRoomRequestDto;
 import com.alura.br.RoomReservation.dto.room.RoomDto;
+import com.alura.br.RoomReservation.dto.room.UpdateRoomRequestDto;
 import com.alura.br.RoomReservation.models.Room;
 import com.alura.br.RoomReservation.repositories.RoomRepository;
 import com.alura.br.RoomReservation.services.IRoomService;
@@ -56,5 +57,15 @@ public class RoomService implements IRoomService {
             throw new ObjectNotFoundException("Sala não encontrada.");
         }
         roomRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public RoomDto updateRoom(UpdateRoomRequestDto dto, Long id) {
+        var roomIfExists = roomRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Sala não encontrada."));
+       
+        var updatedRoom = RoomMapper.updateRoomFromDto(dto, roomIfExists);
+        roomRepository.save(updatedRoom);
+        return RoomMapper.toDto(updatedRoom);
     }
 }
