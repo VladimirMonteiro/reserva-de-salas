@@ -1,8 +1,6 @@
 package com.alura.br.RoomReservation.services.implementations;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
@@ -109,6 +107,22 @@ class RoomServiceTest {
         assertEquals(room.getReservations().size(), result.get(0).reservations().size());
       
         verify(roomRepository, times(1)).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void shouldDeleteRoomWhenRoomAlreadyExists() {
+        when(roomRepository.existsById(anyLong())).thenReturn(true);
+
+        assertDoesNotThrow(() -> roomService.deleteRoom(anyLong()));
+    }
+
+    @Test
+    void shouldThrowsObjectNotFoundExceptionWhenRoomNotExists() {
+        when(roomRepository.existsById(anyLong())).thenReturn(false);
+
+        var exception = assertThrows(ObjectNotFoundException.class, () -> roomService.deleteRoom(anyLong()));
+
+        assertEquals("Sala não encontrada.", exception.getMessage());
     }
 
 
