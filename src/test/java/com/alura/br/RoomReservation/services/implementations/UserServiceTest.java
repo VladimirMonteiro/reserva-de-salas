@@ -242,7 +242,7 @@ class UserServiceTest {
     }
 
     private UpdateUserDto buildUpdateUserRequestDto() {
-        return new UpdateUserDto("João Atualizado", "123.456.789-00", 30, "(11) 98888-7777",
+        return new UpdateUserDto(1L, "João Atualizado", "123.456.789-00", 30, "(11) 98888-7777",
                 "joao@gmail.com");
     }
 }

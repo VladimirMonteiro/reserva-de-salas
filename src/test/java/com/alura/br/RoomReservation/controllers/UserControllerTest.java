@@ -123,13 +123,16 @@ class UserControllerTest {
     void shouldReturn200AndUserUpdated () throws Exception {
         Long id = 1L;
         var updateUserDto = new UpdateUserDto(
+                1L,
                 "Ana Lima",
                 "791.534.408-03",
                 30,
                 "ana2@email.com",
                 "(11) 99999-8888");
 
-        var userUpdated = new UserDto("Ana Lima",
+        var userUpdated = new UserDto(
+                1L,
+                "Ana Lima",
                 "791.534.408-03",
                 30,
                 "(11) 99999-8888",
@@ -152,6 +155,6 @@ class UserControllerTest {
     }
 
     private UserDto buildUserDto () {
-        return new UserDto("Ana", "791.534.408-03", 25, "(11) 99999-9999", "ana@email.com");
+        return new UserDto(1L, "Ana", "791.534.408-03", 25, "(11) 99999-9999", "ana@email.com");
     }
 }

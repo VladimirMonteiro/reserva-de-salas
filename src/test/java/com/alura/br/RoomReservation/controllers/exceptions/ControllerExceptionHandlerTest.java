@@ -96,6 +96,6 @@ class ControllerExceptionHandlerTest {
     }
 
     private UserDto buildUserDto() {
-        return new UserDto("Ana", "791.534.408-03", 25, "(11) 99999-9999", "ana@email.com");
+        return new UserDto(1L, "Ana", "791.534.408-03", 25, "(11) 99999-9999", "ana@email.com");
     }
 }
