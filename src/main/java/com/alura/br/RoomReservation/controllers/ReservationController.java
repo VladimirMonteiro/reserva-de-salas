@@ -33,4 +33,10 @@ public class ReservationController {
                                                         @RequestParam(defaultValue = "20") int size) {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.findAll(page, size));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReservation (@PathVariable Long id) {
+        reservationService.deleteReservation(id);
+        return ResponseEntity.noContent().build();
+    }
 }

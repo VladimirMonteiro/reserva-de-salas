@@ -68,4 +68,12 @@ public class ReservationService implements IReservationService {
         Page<Reservation> pageReservation = reservationRepository.findAll(pageable);
         return pageReservation.getContent().stream().map(ReservationMapper::toDto).toList();
     }
+
+    @Override
+    public void deleteReservation (Long id) {
+        if (!reservationRepository.existsById(id)) {
+            throw new ObjectNotFoundException("Reserva não encontrada.");
+        }
+        reservationRepository.deleteById(id);
+    }
 }
