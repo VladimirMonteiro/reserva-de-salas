@@ -19,6 +19,7 @@ public class UserMapper {
 
     public static UserDto toDto(User user) {
         return new UserDto(
+                user.getId(),
                 user.getName(),
                 user.getCpf(),
                 user.getAge(),
@@ -28,6 +29,7 @@ public class UserMapper {
 
     public static UserDto toDto(UpdateUserDto dto) {
         return new UserDto(
+                dto.id(),
                 dto.name(),
                 dto.cpf(),
                 dto.age(),

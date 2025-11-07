@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.br.CPF;
 
-public record UpdateUserDto(@NotBlank(message = "O nome é obrigatório.") String name,
+public record UpdateUserDto(Long id, @NotBlank(message = "O nome é obrigatório.") String name,
                 @NotBlank(message = "O CPF é obrigatório.") @CPF(message = "O CPF informado é inválido.") String cpf,
                 @NotNull(message = "A idade é obrigatório.") Integer age,
                 @NotBlank(message = "O e-mail é obrigatório,") @Email(message = "Formato do e-mail incorreto,") String email,
