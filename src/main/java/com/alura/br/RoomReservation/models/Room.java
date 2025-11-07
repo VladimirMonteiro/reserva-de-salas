@@ -28,9 +28,6 @@ public class Room {
     private RoomStatus roomStatus;
 
     @Setter(AccessLevel.NONE)
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "room_reservation",
-    joinColumns = @JoinColumn(name = "room_id"),
-    inverseJoinColumns = @JoinColumn(name = "reservation_id"))
+    @OneToMany(mappedBy = "room")
     private List<Reservation> reservations = new ArrayList<>();
 }
