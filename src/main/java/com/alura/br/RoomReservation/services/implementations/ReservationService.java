@@ -71,6 +71,7 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
+    @Transactional
     public void deleteReservation (Long id) {
         if (!reservationRepository.existsById(id)) {
             throw new ObjectNotFoundException("Reserva não encontrada.");
