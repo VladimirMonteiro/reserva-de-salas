@@ -18,11 +18,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -89,6 +94,23 @@ class ReservationServiceTest {
         var exception = assertThrows(ObjectNotFoundException.class, () -> reservationService.findById(1L));
 
         assertEquals("Reserva não encontrada.", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnPageOfListReservations () {
+        var listReservations = List.of(reservation);
+        Page<Reservation> reservationsPage = new PageImpl<>(listReservations);
+
+        when(reservationRepository.findAll(any(Pageable.class))).thenReturn(reservationsPage);
+
+        var result = reservationService.findAll(0, 20);
+
+        assertNotNull(result);
+        assertEquals(reservation.getId(), result.getFirst().id());
+        assertEquals(reservation.getInitialDate(), result.getFirst().initialDate());
+        assertEquals(reservation.getEndDate(), result.getFirst().endDate());
+        assertEquals(reservation.getUser().getId(), result.getFirst().userDto().id());
+        assertEquals(reservation.getRoom().getId(), result.getFirst().roomDto().id());
     }
 
 
