@@ -2,6 +2,7 @@ package com.alura.br.RoomReservation.controllers;
 
 import com.alura.br.RoomReservation.dto.reservation.CreateReservationRequestDto;
 import com.alura.br.RoomReservation.dto.reservation.ReservationDto;
+import com.alura.br.RoomReservation.dto.reservation.UpdateReservationRequestDto;
 import com.alura.br.RoomReservation.services.IReservationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,10 @@ public class ReservationController {
     public ResponseEntity<Void> deleteReservation (@PathVariable Long id) {
         reservationService.deleteReservation(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReservationDto> updateReservation(@RequestBody UpdateReservationRequestDto dto, @PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.updateReservation(dto, id));
     }
 }

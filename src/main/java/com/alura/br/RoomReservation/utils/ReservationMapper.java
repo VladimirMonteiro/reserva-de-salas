@@ -2,6 +2,7 @@ package com.alura.br.RoomReservation.utils;
 
 import com.alura.br.RoomReservation.dto.reservation.CreateReservationRequestDto;
 import com.alura.br.RoomReservation.dto.reservation.ReservationDto;
+import com.alura.br.RoomReservation.dto.reservation.UpdateReservationRequestDto;
 import com.alura.br.RoomReservation.models.Reservation;
 import com.alura.br.RoomReservation.models.enums.ReservationStatus;
 
@@ -24,5 +25,12 @@ public class ReservationMapper {
 
     public static List<ReservationDto> toListDto(List<Reservation> reservations) {
         return reservations.stream().map(ReservationMapper::toDto).toList();
+    }
+
+    public static Reservation updateReservationToEntity(UpdateReservationRequestDto dto, Reservation reservation) {
+        if (dto.initialDate() != null) reservation.setInitialDate(dto.initialDate());
+        if (dto.endDate() != null) reservation.setEndDate(dto.endDate());
+        if (dto.reservationStatus() != null) reservation.setReservationStatus(dto.reservationStatus());
+        return reservation;
     }
 }

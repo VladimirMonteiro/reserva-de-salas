@@ -2,6 +2,7 @@ package com.alura.br.RoomReservation.services.implementations;
 
 import com.alura.br.RoomReservation.dto.reservation.CreateReservationRequestDto;
 import com.alura.br.RoomReservation.dto.reservation.ReservationDto;
+import com.alura.br.RoomReservation.dto.reservation.UpdateReservationRequestDto;
 import com.alura.br.RoomReservation.models.Reservation;
 import com.alura.br.RoomReservation.models.enums.RoomStatus;
 import com.alura.br.RoomReservation.repositories.ReservationRepository;
@@ -75,5 +76,29 @@ public class ReservationService implements IReservationService {
             throw new ObjectNotFoundException("Reserva não encontrada.");
         }
         reservationRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public ReservationDto updateReservation (UpdateReservationRequestDto dto, Long id) {
+        var reservation = reservationRepository
+                .findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Reserva não encontrada."));
+
+        boolean conflict = reservationRepository.existsConflictExcludingCurrent(
+                reservation.getRoom().getId(),
+                reservation.getId(),
+                dto.initialDate(),
+                dto.endDate()
+        );
+
+        if (conflict) {
+            throw new ReservationConflictException("A sala já está reservada neste período.");
+        }
+
+        var updated = ReservationMapper.updateReservationToEntity(dto, reservation);
+        reservationRepository.save(updated);
+
+        return ReservationMapper.toDto(updated);
     }
 }
