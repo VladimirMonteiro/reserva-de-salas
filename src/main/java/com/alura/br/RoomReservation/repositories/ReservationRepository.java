@@ -13,7 +13,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
         SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END
         FROM Reservation r
         WHERE r.room.id = :roomId
-          AND r.reservationStatus <> 'CANCELLED'
+          AND r.reservationStatus = 'ACTIVE'
           AND (
                 (r.initialDate < :endDate) AND
                 (r.endDate > :startDate)
