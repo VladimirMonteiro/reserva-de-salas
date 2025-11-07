@@ -3,6 +3,7 @@ package com.alura.br.RoomReservation.controllers;
 import com.alura.br.RoomReservation.dto.user.CreateUserRequestDto;
 import com.alura.br.RoomReservation.dto.user.UpdateUserDto;
 import com.alura.br.RoomReservation.dto.user.UserDto;
+import com.alura.br.RoomReservation.services.IUserService;
 import com.alura.br.RoomReservation.services.implementations.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final IUserService userService;
 
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid CreateUserRequestDto dto) {
