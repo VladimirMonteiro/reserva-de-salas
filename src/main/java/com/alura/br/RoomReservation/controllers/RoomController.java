@@ -1,32 +1,24 @@
 package com.alura.br.RoomReservation.controllers;
 
-import org.springframework.web.bind.annotation.*;
-
 import com.alura.br.RoomReservation.dto.room.CreateRoomRequestDto;
 import com.alura.br.RoomReservation.dto.room.RoomDto;
 import com.alura.br.RoomReservation.dto.room.UpdateRoomRequestDto;
 import com.alura.br.RoomReservation.services.implementations.RoomService;
-
 import jakarta.validation.Valid;
-
-import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
 @RequestMapping("/api/v1/rooms")
+@RequiredArgsConstructor
 public class RoomController {
 
     private final RoomService roomService;
-
-    public RoomController(RoomService roomService) {
-        this.roomService = roomService;
-    }
 
     @PostMapping
     public ResponseEntity<RoomDto> createRoom(@RequestBody @Valid CreateRoomRequestDto dto) {

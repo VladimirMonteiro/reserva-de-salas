@@ -1,32 +1,24 @@
 package com.alura.br.RoomReservation.controllers;
 
-import org.springframework.web.bind.annotation.*;
-
 import com.alura.br.RoomReservation.dto.user.CreateUserRequestDto;
 import com.alura.br.RoomReservation.dto.user.UpdateUserDto;
 import com.alura.br.RoomReservation.dto.user.UserDto;
 import com.alura.br.RoomReservation.services.implementations.UserService;
-
 import jakarta.validation.Valid;
-
-import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
 @RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid CreateUserRequestDto dto) {

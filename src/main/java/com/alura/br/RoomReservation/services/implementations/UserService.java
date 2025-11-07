@@ -9,6 +9,7 @@ import com.alura.br.RoomReservation.services.IUserService;
 import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 import com.alura.br.RoomReservation.strategy.userValidations.UserValidationsStategy;
 import com.alura.br.RoomReservation.utils.UserMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final List<UserValidationsStategy> validations;
-
-    public UserService(UserRepository userRepository, List<UserValidationsStategy> validations) {
-        this.userRepository = userRepository;
-        this.validations = validations;
-    }
 
     @Override
     public UserDto createUser(CreateUserRequestDto dto) {
