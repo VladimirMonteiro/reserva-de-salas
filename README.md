@@ -45,6 +45,15 @@ Todo o projeto foi construído seguindo boas práticas de **clean code**, **cama
 
 ---
 
+## 🧩 Modelo de Domínio
+
+O domínio da aplicação representa o processo de reserva de salas por usuários, estruturado em três entidades principais — User, Reservation e Room — além dos enumeradores RoomStatus e ReservationStatus para controle de estado.
+O modelo foi projetado para manter relações claras entre os objetos e refletir diretamente a lógica de negócio da API.
+
+
+<img width="1570" height="816" alt="room-reservation-api-domain" src="https://github.com/user-attachments/assets/b069438f-8f91-46e8-b00f-50711826f830" />
+
+
 ## 🧩 Arquitetura do Projeto
 
 O projeto segue uma **arquitetura em camadas** bem definida, promovendo clareza, isolamento e testabilidade.
