@@ -4,6 +4,7 @@ import com.alura.br.RoomReservation.dto.reservation.CreateReservationRequestDto;
 import com.alura.br.RoomReservation.dto.reservation.ReservationDto;
 import com.alura.br.RoomReservation.dto.reservation.UpdateReservationRequestDto;
 import com.alura.br.RoomReservation.models.Reservation;
+import com.alura.br.RoomReservation.models.enums.ReservationStatus;
 import com.alura.br.RoomReservation.models.enums.RoomStatus;
 import com.alura.br.RoomReservation.repositories.ReservationRepository;
 import com.alura.br.RoomReservation.repositories.RoomRepository;
@@ -101,5 +102,13 @@ public class ReservationService implements IReservationService {
         reservationRepository.save(updated);
 
         return ReservationMapper.toDto(updated);
+    }
+
+    @Override
+    @Transactional
+    public ReservationDto finishReservation (Long id) {
+        var reservation = reservationRepository.getReferenceById(id);
+        reservation.setReservationStatus(ReservationStatus.FINISHED);
+        return ReservationMapper.toDto(reservation);
     }
 }

@@ -45,4 +45,9 @@ public class ReservationController {
     public ResponseEntity<ReservationDto> updateReservation(@RequestBody UpdateReservationRequestDto dto, @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.updateReservation(dto, id));
     }
+
+    @PutMapping("finish/{id}")
+    public ResponseEntity<ReservationDto> finishReservation(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.finishReservation(id));
+    }
 }

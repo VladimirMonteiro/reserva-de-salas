@@ -13,4 +13,5 @@ public interface IReservationService {
     List<ReservationDto> findAll(int page, int size);
     void deleteReservation(Long id);
     ReservationDto updateReservation(UpdateReservationRequestDto dto, Long id);
+    ReservationDto finishReservation(Long id);
 }
