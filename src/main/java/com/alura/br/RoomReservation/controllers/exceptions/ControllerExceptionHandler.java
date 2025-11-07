@@ -1,19 +1,18 @@
 package com.alura.br.RoomReservation.controllers.exceptions;
 
-import java.time.Instant;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
+import com.alura.br.RoomReservation.services.exceptions.ReservationConflictException;
+import com.alura.br.RoomReservation.services.exceptions.UserAlreadyExistsException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.alura.br.RoomReservation.services.exceptions.UserAlreadyExistsException;
-import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
-
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import jakarta.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
@@ -55,5 +54,12 @@ public class ControllerExceptionHandler {
         var error = new StandardError(Instant.now(), status, "Recurso não encontrado", Map.of("notFound", e.getMessage()), request.getServletPath());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ReservationConflictException.class)
+    public ResponseEntity<StandardError> ReservationConflictException (ReservationConflictException e, HttpServletRequest request) {
+        var error = new StandardError(Instant.now(), HttpStatus.CONFLICT.value(),
+                "Conflito de reserva", Map.of("reserva", e.getMessage()), request.getServletPath());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }
