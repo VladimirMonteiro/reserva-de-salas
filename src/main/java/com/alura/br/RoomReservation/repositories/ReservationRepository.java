@@ -24,4 +24,18 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    @Query("""
+                SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
+                FROM Reservation r
+                WHERE r.room.id = :roomId
+                  AND r.id <> :reservationId
+                  AND r.reservationStatus = 'ACTIVE'
+                  AND (
+                      (:initialDate BETWEEN r.initialDate AND r.endDate)
+                      OR (:endDate BETWEEN r.initialDate AND r.endDate)
+                      OR (r.initialDate BETWEEN :initialDate AND :endDate)
+                  )
+            """)
+    boolean existsConflictExcludingCurrent (Long roomId, Long reservationId, LocalDate initialDate, LocalDate endDate);
 }
