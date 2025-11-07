@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/reservations")
 @RequiredArgsConstructor
@@ -24,5 +26,11 @@ public class ReservationController {
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDto> findById (@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ReservationDto>> findAll(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.findAll(page, size));
     }
 }

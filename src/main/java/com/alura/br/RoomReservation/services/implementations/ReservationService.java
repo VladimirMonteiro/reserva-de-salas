@@ -2,6 +2,7 @@ package com.alura.br.RoomReservation.services.implementations;
 
 import com.alura.br.RoomReservation.dto.reservation.CreateReservationRequestDto;
 import com.alura.br.RoomReservation.dto.reservation.ReservationDto;
+import com.alura.br.RoomReservation.models.Reservation;
 import com.alura.br.RoomReservation.models.enums.RoomStatus;
 import com.alura.br.RoomReservation.repositories.ReservationRepository;
 import com.alura.br.RoomReservation.repositories.RoomRepository;
@@ -11,8 +12,13 @@ import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 import com.alura.br.RoomReservation.services.exceptions.ReservationConflictException;
 import com.alura.br.RoomReservation.utils.ReservationMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +59,13 @@ public class ReservationService implements IReservationService {
                 orElseThrow(() -> new ObjectNotFoundException("Reserva não encontrada."));
 
         return ReservationMapper.toDto(reservationIfExists);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationDto> findAll (int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Reservation> pageReservation = reservationRepository.findAll(pageable);
+        return pageReservation.getContent().stream().map(ReservationMapper::toDto).toList();
     }
 }
