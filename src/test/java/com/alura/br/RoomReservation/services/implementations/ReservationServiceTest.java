@@ -113,6 +113,22 @@ class ReservationServiceTest {
         assertEquals(reservation.getRoom().getId(), result.getFirst().roomDto().id());
     }
 
+    @Test
+    void shouldDeleteReservationWhenReservationIdIsValid() {
+        when(reservationRepository.existsById(anyLong())).thenReturn(true);
+
+        assertDoesNotThrow(()-> reservationService.deleteReservation(anyLong()));
+    }
+
+    @Test
+    void shouldThrowsReturnObjectNotFoundWhenReservationRepoReturnFalse() {
+        when(reservationRepository.existsById(anyLong())).thenReturn(false);
+
+        var exception = assertThrows(ObjectNotFoundException.class, () -> reservationService.deleteReservation(anyLong()));
+
+        assertEquals("Reserva não encontrada.", exception.getMessage());
+    }
+
 
     private ReservationDto buildReservationDto () {
         return new ReservationDto(1L,
