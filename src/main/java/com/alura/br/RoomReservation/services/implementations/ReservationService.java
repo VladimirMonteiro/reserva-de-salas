@@ -7,6 +7,7 @@ import com.alura.br.RoomReservation.repositories.ReservationRepository;
 import com.alura.br.RoomReservation.repositories.RoomRepository;
 import com.alura.br.RoomReservation.repositories.UserRepository;
 import com.alura.br.RoomReservation.services.IReservationService;
+import com.alura.br.RoomReservation.services.exceptions.ObjectNotFoundException;
 import com.alura.br.RoomReservation.services.exceptions.ReservationConflictException;
 import com.alura.br.RoomReservation.utils.ReservationMapper;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,14 @@ public class ReservationService implements IReservationService {
 
         var savedReservation = reservationRepository.save(newReservation);
         return ReservationMapper.toDto(savedReservation);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ReservationDto findById (Long id) {
+        var reservationIfExists = reservationRepository.findById(id).
+                orElseThrow(() -> new ObjectNotFoundException("Reserva não encontrada."));
+
+        return ReservationMapper.toDto(reservationIfExists);
     }
 }
